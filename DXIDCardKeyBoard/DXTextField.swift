@@ -41,15 +41,15 @@ class DXTextField: UITextField {
         super.init(coder: aDecoder)
     }
     
-    private func didInit() {
-        self.keyboardType = .numberPad
-        
-        let noti = NotificationCenter.default
-        noti.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        noti.addObserver(self, selector: #selector(textFieldDidBeginEditing(notification:)), name: UITextField.textDidBeginEditingNotification, object: nil)
-        noti.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-        noti.addObserver(self, selector: #selector(textFieldDidEndEditing(notification:)), name: UITextField.textDidEndEditingNotification, object: nil)
-    }
+private func didInit() {
+    self.keyboardType = .numberPad
+    
+    let noti = NotificationCenter.default
+    noti.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+    noti.addObserver(self, selector: #selector(textFieldDidBeginEditing(notification:)), name: UITextField.textDidBeginEditingNotification, object: nil)
+    noti.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    noti.addObserver(self, selector: #selector(textFieldDidEndEditing(notification:)), name: UITextField.textDidEndEditingNotification, object: nil)
+}
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -152,6 +152,11 @@ class DXTextField: UITextField {
     }
     // 完成按钮点击
     @objc func doneButtonClick(button : UIButton) {
+        if let tempText = self.text,tempText.count >= 18 {
+            print("身份证号最多输入18位")
+            return
+        }
+        
         guard let selectedRange = selectedRange() else { return }
         // 获得光标所在的位置
         let insertIndex = selectedRange.location
@@ -235,11 +240,11 @@ extension DXTextField {
                     setupDoneKey()
                 }
             }
-            if Double(UIDevice.current.systemVersion)! < 9.0 {
-                if self.notification != nil {
-                    setupDoneKey()
-                }
-            }
+//            if Double(UIDevice.current.systemVersion)! < 9.0 {
+//                if self.notification != nil {
+//                    setupDoneKey()
+//                }
+//            }
         }
 
     }
